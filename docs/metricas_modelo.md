@@ -8,6 +8,7 @@
 | Precision | 1.0000 |
 | Recall | 1.0000 |
 | F1-score | 1.0000 |
+| AUC ROC | 1.0000 |
 
 ## Interpretación inicial
 
@@ -17,3 +18,4 @@ Estas métricas permiten evaluar el desempeño inicial del modelo de clasificaci
 - Precision indica qué tan confiables son las predicciones positivas.
 - Recall indica qué proporción de clientes con churn fueron identificados.
 - F1-score resume precision y recall en una sola métrica.
+- AUC ROC mide la capacidad del modelo para distinguir entre clientes con churn y sin churn.
