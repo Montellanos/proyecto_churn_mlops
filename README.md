@@ -53,6 +53,14 @@ El flujo básico será:
 5. Crear una API básica.
 6. Probar el funcionamiento inicial.
 
+## Experimento adicional
+
+Para este mini experimento se agregó soporte para un segundo algoritmo de clasificación, `RandomForestClassifier`, junto con un ajuste controlado de hiperparámetros.
+
+También se amplió la evaluación del modelo para incluir la métrica AUC ROC, que mide la capacidad del clasificador para distinguir entre clientes con churn y sin churn.
+
+El entrenamiento por defecto sigue siendo `LogisticRegression`, pero es posible probar el nuevo algoritmo con el parámetro `algoritmo="random_forest"` en `src/entrenar_modelo.py`.
+
 ## Control de versiones
 
 Este proyecto utiliza Git para registrar cambios y GitHub para respaldar el repositorio en la nube.

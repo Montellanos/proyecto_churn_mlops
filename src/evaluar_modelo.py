@@ -2,7 +2,7 @@ from pathlib import Path
 
 import joblib
 import pandas as pd
-from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, roc_auc_score
 
 
 BASE_DIR = Path(__file__).resolve().parents[1]
@@ -46,6 +46,11 @@ def evaluar_modelo():
     recall = recall_score(y_test, y_pred, zero_division=0)
     f1 = f1_score(y_test, y_pred, zero_division=0)
 
+    roc_auc = None
+    if hasattr(modelo, "predict_proba"):
+        y_proba = modelo.predict_proba(X_test)[:, 1]
+        roc_auc = roc_auc_score(y_test, y_proba)
+
     contenido = f"""# Métricas del modelo de churn
 
 ## Resultados principales
@@ -56,6 +61,7 @@ def evaluar_modelo():
 | Precision | {precision:.4f} |
 | Recall | {recall:.4f} |
 | F1-score | {f1:.4f} |
+| AUC ROC | {roc_auc:.4f} |
 
 ## Interpretación inicial
 
@@ -65,6 +71,7 @@ Estas métricas permiten evaluar el desempeño inicial del modelo de clasificaci
 - Precision indica qué tan confiables son las predicciones positivas.
 - Recall indica qué proporción de clientes con churn fueron identificados.
 - F1-score resume precision y recall en una sola métrica.
+- AUC ROC mide la capacidad del modelo para distinguir entre clientes con churn y sin churn.
 """
 
     METRICS_FILE.write_text(contenido, encoding="utf-8")
