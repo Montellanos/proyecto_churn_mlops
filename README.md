@@ -15,7 +15,7 @@ El objetivo es construir una estructura básica de trabajo para un proyecto de M
 
 Se trabajará con un caso simplificado de predicción de abandono de clientes, conocido como churn.
 
-El modelo intentará predecir si un cliente podría abandonar un servicio, utilizando variables como edad, antigüedad, saldo promedio, reclamos y uso de aplicación móvil.
+El modelo intentará predecir si un cliente podría abandonar un servicio, utilizando variables como antigüedad, cargo mensual y reclamos.
 
 ## Estructura del proyecto
 

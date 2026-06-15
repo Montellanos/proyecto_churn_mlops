@@ -1,7 +1,7 @@
 {
   "version_modelo": "modelo_churn_v1",
   "version_servicio": "1.0.0",
-  "fecha_entrenamiento": "2026-06-14T23:58:06.909896+00:00",
+  "fecha_entrenamiento": "2026-06-15T20:51:37.049341+00:00",
   "archivo_modelo": "modelo_churn_v1.joblib",
   "variables_entrada": [
     "antiguedad",
@@ -10,8 +10,8 @@
   ],
   "version_sklearn": "1.8.0",
   "metricas": {
-    "accuracy": 0.825,
-    "f1_score": 0.8659,
-    "auc_roc": 0.8749
+    "accuracy": 1.0,
+    "f1_score": 1.0,
+    "auc_roc": 1.0
   }
 }

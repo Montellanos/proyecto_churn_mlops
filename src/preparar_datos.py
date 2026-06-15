@@ -19,22 +19,22 @@ def crear_dataset_demo():
     """
 
     datos = [
-        {"edad": 25, "antiguedad_meses": 6, "saldo_promedio": 1200, "reclamos": 3, "usa_app": 0, "churn": 1},
-        {"edad": 34, "antiguedad_meses": 24, "saldo_promedio": 3500, "reclamos": 0, "usa_app": 1, "churn": 0},
-        {"edad": 45, "antiguedad_meses": 36, "saldo_promedio": 5000, "reclamos": 1, "usa_app": 1, "churn": 0},
-        {"edad": 22, "antiguedad_meses": 4, "saldo_promedio": 800, "reclamos": 4, "usa_app": 0, "churn": 1},
-        {"edad": 52, "antiguedad_meses": 60, "saldo_promedio": 7000, "reclamos": 0, "usa_app": 1, "churn": 0},
-        {"edad": 29, "antiguedad_meses": 8, "saldo_promedio": 1500, "reclamos": 2, "usa_app": 0, "churn": 1},
-        {"edad": 40, "antiguedad_meses": 30, "saldo_promedio": 4200, "reclamos": 1, "usa_app": 1, "churn": 0},
-        {"edad": 31, "antiguedad_meses": 10, "saldo_promedio": 1600, "reclamos": 3, "usa_app": 0, "churn": 1},
-        {"edad": 48, "antiguedad_meses": 48, "saldo_promedio": 6000, "reclamos": 0, "usa_app": 1, "churn": 0},
-        {"edad": 27, "antiguedad_meses": 7, "saldo_promedio": 1100, "reclamos": 4, "usa_app": 0, "churn": 1},
-        {"edad": 36, "antiguedad_meses": 26, "saldo_promedio": 3900, "reclamos": 1, "usa_app": 1, "churn": 0},
-        {"edad": 23, "antiguedad_meses": 5, "saldo_promedio": 900, "reclamos": 5, "usa_app": 0, "churn": 1},
-        {"edad": 55, "antiguedad_meses": 72, "saldo_promedio": 8200, "reclamos": 0, "usa_app": 1, "churn": 0},
-        {"edad": 33, "antiguedad_meses": 14, "saldo_promedio": 2100, "reclamos": 2, "usa_app": 0, "churn": 1},
-        {"edad": 41, "antiguedad_meses": 33, "saldo_promedio": 4600, "reclamos": 0, "usa_app": 1, "churn": 0},
-        {"edad": 30, "antiguedad_meses": 9, "saldo_promedio": 1300, "reclamos": 3, "usa_app": 0, "churn": 1},
+        {"edad": 25, "antiguedad": 6, "cargo_mensual": 120.0, "reclamos": 3, "usa_app": 0, "churn": 1},
+        {"edad": 34, "antiguedad": 24, "cargo_mensual": 350.0, "reclamos": 0, "usa_app": 1, "churn": 0},
+        {"edad": 45, "antiguedad": 36, "cargo_mensual": 500.0, "reclamos": 1, "usa_app": 1, "churn": 0},
+        {"edad": 22, "antiguedad": 4, "cargo_mensual": 80.0, "reclamos": 4, "usa_app": 0, "churn": 1},
+        {"edad": 52, "antiguedad": 60, "cargo_mensual": 700.0, "reclamos": 0, "usa_app": 1, "churn": 0},
+        {"edad": 29, "antiguedad": 8, "cargo_mensual": 150.0, "reclamos": 2, "usa_app": 0, "churn": 1},
+        {"edad": 40, "antiguedad": 30, "cargo_mensual": 420.0, "reclamos": 1, "usa_app": 1, "churn": 0},
+        {"edad": 31, "antiguedad": 10, "cargo_mensual": 160.0, "reclamos": 3, "usa_app": 0, "churn": 1},
+        {"edad": 48, "antiguedad": 48, "cargo_mensual": 600.0, "reclamos": 0, "usa_app": 1, "churn": 0},
+        {"edad": 27, "antiguedad": 7, "cargo_mensual": 110.0, "reclamos": 4, "usa_app": 0, "churn": 1},
+        {"edad": 36, "antiguedad": 26, "cargo_mensual": 390.0, "reclamos": 1, "usa_app": 1, "churn": 0},
+        {"edad": 23, "antiguedad": 5, "cargo_mensual": 90.0, "reclamos": 5, "usa_app": 0, "churn": 1},
+        {"edad": 55, "antiguedad": 72, "cargo_mensual": 820.0, "reclamos": 0, "usa_app": 1, "churn": 0},
+        {"edad": 33, "antiguedad": 14, "cargo_mensual": 210.0, "reclamos": 2, "usa_app": 0, "churn": 1},
+        {"edad": 41, "antiguedad": 33, "cargo_mensual": 460.0, "reclamos": 0, "usa_app": 1, "churn": 0},
+        {"edad": 30, "antiguedad": 9, "cargo_mensual": 130.0, "reclamos": 3, "usa_app": 0, "churn": 1},
     ]
 
     df = pd.DataFrame(datos)
@@ -48,8 +48,9 @@ def preparar_datos():
 
     DATA_DIR.mkdir(exist_ok=True)
 
-    if not RAW_DATA.exists():
-        crear_dataset_demo()
+    # Forzamos la creación del dataset para asegurar que las columnas
+    # coincidan con la versión actual (antiguedad, cargo_mensual)
+    crear_dataset_demo()
 
     df = pd.read_csv(RAW_DATA)
 

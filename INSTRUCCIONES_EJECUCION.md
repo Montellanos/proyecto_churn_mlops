@@ -108,11 +108,9 @@ Ejemplo de entrada:
 
 ```json
 {
-  "edad": 28,
-  "antiguedad_meses": 8,
-  "saldo_promedio": 1200,
-  "reclamos": 3,
-  "usa_app": 0
+  "antiguedad": 12,
+  "cargo_mensual": 95.5,
+  "reclamos": 3
 }
 ```
 

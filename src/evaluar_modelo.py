@@ -11,7 +11,7 @@ MODELS_DIR = BASE_DIR / "models"
 DOCS_DIR = BASE_DIR / "docs"
 
 TEST_DATA = DATA_DIR / "test.csv"
-MODEL_FILE = MODELS_DIR / "modelo_churn.pkl"
+MODEL_FILE = MODELS_DIR / "modelo_churn_v1.joblib"
 METRICS_FILE = DOCS_DIR / "metricas_modelo.md"
 
 
@@ -34,7 +34,18 @@ def evaluar_modelo():
 
     df = pd.read_csv(TEST_DATA)
 
-    X_test = df.drop(columns=["churn"])
+    # Seleccionamos solo las variables que el modelo espera (antiguedad, cargo_mensual, reclamos)
+    features = ["antiguedad", "cargo_mensual", "reclamos"]
+
+    # Validar que las columnas existen antes de filtrar
+    faltantes = [col for col in features if col not in df.columns]
+    if faltantes:
+        raise KeyError(
+            f"Las columnas {faltantes} no están en {TEST_DATA}. "
+            "Ejecuta 'python src/preparar_datos.py' para actualizar los archivos CSV."
+        )
+
+    X_test = df[features]
     y_test = df["churn"]
 
     modelo = joblib.load(MODEL_FILE)

@@ -22,8 +22,8 @@ El dataset utiliza las siguientes variables:
 | Variable | Descripción |
 |---|---|
 | edad | Edad del cliente. |
-| antiguedad_meses | Tiempo de permanencia del cliente en meses. |
-| saldo_promedio | Saldo promedio del cliente. |
+| antiguedad | Tiempo de permanencia del cliente en meses. |
+| cargo_mensual | Monto mensual pagado por el cliente. |
 | reclamos | Cantidad de reclamos realizados. |
 | usa_app | Indica si el cliente usa la aplicación móvil. |
 

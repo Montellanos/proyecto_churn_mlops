@@ -8,12 +8,13 @@ de clasificación y guarda el artefacto serializado con joblib.
 from pathlib import Path
 from datetime import datetime, timezone
 import json
+import pandas as pd
 
 import joblib
 import numpy as np
 import sklearn
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, f1_score, roc_auc_score
+from sklearn.metrics import accuracy_score, f1_score, roc_auc_score, precision_score
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
@@ -23,6 +24,7 @@ from sklearn.preprocessing import StandardScaler
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MODELS_DIR = PROJECT_ROOT / "models"
 DOCS_DIR = PROJECT_ROOT / "docs"
+TRAIN_DATA = PROJECT_ROOT / "data" / "train.csv"
 
 MODEL_PATH = MODELS_DIR / "modelo_churn_v1.joblib"
 METADATA_PATH = MODELS_DIR / "modelo_churn_v1_metadata.json"
@@ -67,15 +69,33 @@ def entrenar_y_guardar_modelo() -> None:
     MODELS_DIR.mkdir(exist_ok=True)
     DOCS_DIR.mkdir(exist_ok=True)
 
-    X, y = generar_datos_sinteticos()
+    if TRAIN_DATA.exists():
+        print(f"Cargando datos de entrenamiento desde: {TRAIN_DATA}")
+        df = pd.read_csv(TRAIN_DATA)
+        features = ["antiguedad", "cargo_mensual", "reclamos"]
 
-    X_train, X_test, y_train, y_test = train_test_split(
-        X,
-        y,
-        test_size=0.25,
-        random_state=42,
-        stratify=y,
-    )
+        # Validar que las columnas existen en el archivo cargado
+        faltantes = [col for col in features if col not in df.columns]
+        if faltantes:
+            raise KeyError(
+                f"Las columnas {faltantes} no se encuentran en {TRAIN_DATA}. "
+                "Ejecuta 'python src/preparar_datos.py' para regenerar los datos correctamente."
+            )
+
+        X = df[features].values
+        y = df["churn"].values
+        X_train, X_test, y_train, y_test = train_test_split(
+            X, y, test_size=0.25, random_state=42, stratify=y
+        )
+    else:
+        print("No se encontró train.csv, generando datos sintéticos...")
+        X, y = generar_datos_sinteticos()
+        X_train, X_test, y_train, y_test = train_test_split(
+            X, y, test_size=0.25, random_state=42, stratify=y
+        )
+
+    # Definir variables de entrada explícitamente para el metadato
+    variables_entrada = ["antiguedad", "cargo_mensual", "reclamos"]
 
     modelo = Pipeline(
         steps=[
@@ -102,11 +122,7 @@ def entrenar_y_guardar_modelo() -> None:
         "version_servicio": "1.0.0",
         "fecha_entrenamiento": datetime.now(timezone.utc).isoformat(),
         "archivo_modelo": MODEL_PATH.name,
-        "variables_entrada": [
-            "antiguedad",
-            "cargo_mensual",
-            "reclamos",
-        ],
+        "variables_entrada": variables_entrada,
         "version_sklearn": sklearn.__version__,
         "metricas": metricas,
     }
