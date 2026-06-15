@@ -6,6 +6,7 @@ de clasificación y guarda el artefacto serializado con joblib.
 """
 
 from pathlib import Path
+from datetime import datetime, timezone
 import json
 
 import joblib
@@ -98,6 +99,8 @@ def entrenar_y_guardar_modelo() -> None:
 
     metadata = {
         "version_modelo": "modelo_churn_v1",
+        "version_servicio": "1.0.0",
+        "fecha_entrenamiento": datetime.now(timezone.utc).isoformat(),
         "archivo_modelo": MODEL_PATH.name,
         "variables_entrada": [
             "antiguedad",
@@ -116,6 +119,7 @@ def entrenar_y_guardar_modelo() -> None:
     METRICS_PATH.write_text(
         "# Métricas del modelo\n\n"
         f"- Modelo: `{MODEL_PATH.name}`\n"
+        f"- Fecha de entrenamiento: {metadata['fecha_entrenamiento']}\n"
         f"- Accuracy: {metricas['accuracy']}\n"
         f"- F1-score: {metricas['f1_score']}\n"
         f"- AUC-ROC: {metricas['auc_roc']}\n"
