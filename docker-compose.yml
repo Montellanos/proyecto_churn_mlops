@@ -1,0 +1,108 @@
+
+networks:
+  monitoring:
+    driver: bridge
+
+# Aquí se definen los volúmenes globales independientes del contenedor
+volumes:
+  influxdb_data:
+  grafana_data:
+  loki_data:
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: python_app
+    ports:
+      - "8000:8000"
+    networks:
+      - monitoring
+    restart: unless-stopped
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.47.0
+    container_name: cadvisor
+    privileged: true  # Permite a cAdvisor leer los metadatos de Docker sin restricciones
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro  # Esencial para mapear nombres de contenedores
+    command:
+      - '-storage_driver=influxdb'
+      - '-storage_driver_db=cadvisor'
+      - '-storage_driver_host=influxdb:8086'
+      - '-storage_driver_buffer_duration=1s'
+    networks:
+      - monitoring
+    restart: unless-stopped
+    depends_on:
+      - influxdb
+  
+  influxdb:
+    image: influxdb:1.8
+    container_name: influxdb
+    volumes:
+      - influxdb_data:/var/lib/influxdb  # Mantiene los datos de hardware
+    networks:
+      - monitoring
+    environment:
+      - INFLUXDB_DB=cadvisor
+    restart: unless-stopped
+
+  loki:
+    image: grafana/loki:2.9.0
+    container_name: loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - loki_data:/loki  # Mantiene el histórico de logs
+    networks:
+      - monitoring
+    restart: unless-stopped
+
+  promtail:
+    image: grafana/promtail:2.9.0
+    container_name: promtail
+    volumes:
+      - /var/log:/var/log:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # Montamos el archivo de configuración limpio
+      - ./promtail-config.yml:/etc/promtail/config.yml:ro
+    command: -config.file=/etc/promtail/config.yml
+    networks:
+      - monitoring
+    restart: unless-stopped
+    depends_on:
+      - loki
+  
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana  # Mantiene tus dashboards y conexiones creadas en la web
+    networks:
+      - monitoring
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    restart: unless-stopped
+
+  traffic-generator:
+    image: alpine:latest
+    container_name: traffic_generator
+    volumes:
+      - ./generate-traffic.sh:/usr/local/bin/generate-traffic.sh
+    command: sh /usr/local/bin/generate-traffic.sh
+    networks:
+      - monitoring
+    restart: unless-stopped
+    depends_on:
+      - app
